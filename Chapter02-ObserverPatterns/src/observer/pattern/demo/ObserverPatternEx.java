@@ -4,22 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class Observer {
-    public void update() {
-        System.out.println("Flag value changed in Subject");
+interface IObserver {
+    public void update(int value);
+}
+
+class Observer1 implements IObserver {
+
+    @Override
+    public void update(int value) {
+        System.out.println("Observer1: flag in Subject is now: " + value);
     }
+    
+}
+
+class Observer2 implements IObserver {
+
+    @Override
+    public void update(int value) {
+        System.out.println("Observer2: flag is changed in Subject to: " + value);;
+    }
+    
 }
 
 interface ISubject {
-    void register(Observer o);
+    void register(IObserver o);
 
-    void unregister(Observer o);
+    void unregister(IObserver o);
 
     void notifyObservers();
 }
 
 class Subject implements ISubject {
-    List<Observer> observerList = new ArrayList<Observer>();
+    List<IObserver> observerList = new ArrayList<IObserver>();
     private int flag;
 
     public int getFlag() {
@@ -32,30 +48,34 @@ class Subject implements ISubject {
     }
 
     @Override
-    public void register(Observer o) {
+    public void register(IObserver o) {
         observerList.add(o);
     }
 
     @Override
-    public void unregister(Observer o) {
+    public void unregister(IObserver o) {
         observerList.remove(o);
     }
 
     @Override
     public void notifyObservers() {
         for (int i = 0; i < observerList.size(); i++) {
-            observerList.get(i).update();
+            observerList.get(i).update(flag);
         }
     }
+
+
 }
 
 public class ObserverPatternEx {
     public static void main(String[] args) {
         System.out.println("***Observer Pattern Demo***\n");
-        Observer o1 = new Observer();
+        Observer1 o1 = new Observer1();
+        Observer2 o2 = new Observer2();
         Subject sub1 = new Subject();
         
         sub1.register(o1);
+        sub1.register(o2);
         System.out.println("Setting Flag = 5");
         sub1.setFlag(5);
         System.out.println("Setting Flag = 25");
